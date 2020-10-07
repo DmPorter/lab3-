@@ -12,11 +12,43 @@ function::function(double x, double y, int i) {
 	this->i = i;
 }
 
+function::function(double* x) {
+	this->i = 0;
+	for (int l = 0; l < this->SZ; l++) {
+		SetPoint(*x, 0);
+		*x++;
+	}
+}
+
+function::function(double* x, double(*f)(double)) {
+	this->i = 0;
+	for (int l = 0; l < this->SZ; l++) {
+		SetPoint(*x, f(*x));
+		*x++;
+	}
+}
+
+
+void function::add(Point A) {
+	SetPoint(A.x, A.y);
+}
+
+void function::add(function F) {
+	int flag = 0;
+	int l = 0;
+	for (int i = 0; i < F.i; i++) 
+	{
+		flag = SetPoint(F.P[i].x, F.P[i].y);
+		if (flag == 1) l++;
+	}
+
+}
+
 int function::SetPoint(double x, double y) {
 	int i = this->i - 1;
 	if (i == this->SZ - 1)
 		return -1;
-	else if (findPoint(x, 1) >= 0)
+	else if (this->P[findPos(x)].x == x)
 		return -2;
 	else {
 		while (i >= 0 && this->P[i].x > x) {
@@ -28,9 +60,10 @@ int function::SetPoint(double x, double y) {
 		this->P[i + 1].y = y;
 		this->i++;
 	}
+	return 1;
 }
 
-int function::findPoint(double key, int a) {
+int function::findPos(double key) {
 	bool flag = false;
 	int l = 0;
 	int r = this->i;
@@ -45,12 +78,7 @@ int function::findPoint(double key, int a) {
 			r = mid - 1; // проверяем, какую часть нужно отбросить
 		else l = mid + 1;
 	}
-	if (a == 1) {
-		if (flag == false)
-			return -1;
-		else return mid;
-	}
-	else return mid;
+		return mid;
 }
 
 void function::GetTable() {
@@ -59,17 +87,17 @@ void function::GetTable() {
 		std::cout <<" i = " << i << ": (" << this->P[i].x << "; " << this->P[i].y << ") " << std::endl << std::endl;
 }
 
-void function::GetMinMax(double* a, double* b) {
 
-	double max = this->P[0].y;
-	double min = this->P[0].y;
-	for (int r = 1; r < this->i; r++)
-	{
-		if (max < this->P[r].y) max = this->P[r].y; //если значение элемента больше значения переменной max, то записываем это значение в переменную
-		if (min > this->P[r].y) min = this->P[r].y; //аналогично и для min
-	}
-	*a = min;
-	*b = max;
+
+
+double function::GetMinMax(int(*f)(double, double))
+{
+	double res = this->P[0].y;
+	int i;
+	for (i = 0; i < this->i; ++i)
+		if (f(this->P[i].y, res) > 0)
+			res = this->P[i].y;
+	return res;
 }
 
 int function::GetType() {
@@ -98,9 +126,9 @@ int function::GetType() {
 }
 
 double function::GetInterpolation(double x) {
-	int i = findPoint(x, 0);
+	int i = findPos(x);
 	double a0, a1;
-	if (this->i == 0)
+  	if (this->i == 0)
 		return 0;
 	if (i == 0) i++;
 	a1 = (this->P[i].y - this->P[i - 1].y) / (this->P[i].x - this->P[i - 1].x);

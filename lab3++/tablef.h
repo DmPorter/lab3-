@@ -14,12 +14,17 @@ class function
 public:
 
 	function(double x = 0, double y = 0, int i = 0);
+	function(double* x);
+	function(double* x, double(*f)(double));
+	void add(Point A);
+	void add(function F);
 	int SetPoint(double x, double y);
-	int findPoint(double key, int a);
+	int findPos(double key);
 	void GetTable();
-	void GetMinMax(double* a, double* b);
 	int GetType();
 	double GetInterpolation(double x);
+	double GetMinMax(int(*f)(double, double));
+	
 
 private:
 

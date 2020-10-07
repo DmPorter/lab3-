@@ -19,3 +19,13 @@ T GetNumber(const char* msg)
 
 	return element;
 }
+
+inline int isgreater(double a, double b)
+{
+	return a > b;
+}
+
+inline int isless(double a, double b)
+{
+	return a < b;
+}

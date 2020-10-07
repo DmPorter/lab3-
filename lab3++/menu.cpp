@@ -66,10 +66,8 @@ void PrintTable(function& table) {
 }
 
 void MinMax(function& table) {
-	double a, b;
-	table.GetMinMax(&a, &b);
-	std::cout << "Min: " << a << std::endl;
-	std::cout << "Max: " << b << std::endl << std::endl;
+	std::cout << "Min: " << table.GetMinMax(&isless) << std::endl;
+	std::cout << "Max: " << table.GetMinMax(&isgreater) << std::endl << std::endl;
 }
 
 void TypeF(function& table) {
